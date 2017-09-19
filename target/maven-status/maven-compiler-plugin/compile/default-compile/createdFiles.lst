@@ -1,0 +1,4 @@
+org/javaavancado/rest/ConfigApplication.class
+org/javaavancado/data/InteressadosRepository.class
+org/javaavancado/rest/InteressadosResource.class
+org/javaavancado/model/Interessados.class

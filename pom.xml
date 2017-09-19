@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.javaavancado</groupId>
+    <artifactId>landpage-web</artifactId>
+    <packaging>war</packaging>
+    <version>0.0.1</version>
+    <name>landpage-web</name>
+
+    <properties>
+        <version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
+
+        <!-- Liquibase settings -->
+        <liquibase.changeLogFile>src/main/resources/migrations/postgresql/liquibase/master.xml</liquibase.changeLogFile>
+        <liquibase.promptOnNonLocalDatabase>false</liquibase.promptOnNonLocalDatabase>
+        <liquibase.driver>org.postgresql.Driver</liquibase.driver>
+        <liquibase.datasource.url>jdbc:postgresql://localhost:5432/daniel.patrocinio</liquibase.datasource.url>
+        <liquibase.datasource.username>postgres</liquibase.datasource.username>
+        <liquibase.datasource.password>postgres</liquibase.datasource.password>
+        <liquibase.datasource.dropAll>false</liquibase.datasource.dropAll>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>7.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>5.2.10.Final</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>landpage</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>2.6</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <changeLogFile>${liquibase.changeLogFile}</changeLogFile>
+                        <driver>${liquibase.driver}</driver>
+                        <url>${liquibase.datasource.url}</url>
+                        <username>${liquibase.datasource.username}</username>
+                        <password>${liquibase.datasource.password}</password>
+                        <promptOnNonLocalDatabase>${liquibase.promptOnNonLocalDatabase}</promptOnNonLocalDatabase>
+                        <migrationSqlOutputFile>${project.build.directory}/liquibase/PATCH_${timestamp}.sql</migrationSqlOutputFile>
+                        <dropFirst>${liquibase.datasource.dropAll}</dropFirst>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>install</phase>
+                            <goals>
+                                <goal>update</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.wildfly.plugins</groupId>
+                    <artifactId>wildfly-maven-plugin</artifactId>
+                    <version>${version.wildfly.maven.plugin}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
